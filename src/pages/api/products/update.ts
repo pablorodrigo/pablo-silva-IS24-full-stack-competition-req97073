@@ -9,6 +9,73 @@ import fs from 'fs';
 import path from 'path';
 import { IProductsDTO } from '@/dtos/Products';
 
+/**
+ * @swagger
+ * /api/products/update:
+ *     put:
+ *       summary: Update a product by ID
+ *       tags:
+ *          - Products
+ *       description: Updates a product with the specified ID in the database
+ *       parameters:
+ *         - name: body
+ *           in: body
+ *           description: The updated product fields and the product ID to be updated
+ *           required: true
+ *           schema:
+ *             $ref: '#/definitions/UpdateProductInput'
+ *       responses:
+ *         200:
+ *           description: OK
+ *           schema:
+ *             $ref: '#/definitions/Product'
+ *         404:
+ *           description: Product not found
+ *         500:
+ *           description: Internal Server Error
+ *
+ * definitions:
+ *   UpdateProductInput:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *       productName:
+ *         type: string
+ *       productOwnerName:
+ *         type: string
+ *       Developers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       scrumMasterName:
+ *         type: string
+ *       startDate:
+ *         type: string
+ *       methodology:
+ *         type: string
+ *     required:
+ *       - productId
+ *   Product:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *       productName:
+ *         type: string
+ *       productOwnerName:
+ *         type: string
+ *       Developers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       scrumMasterName:
+ *         type: string
+ *       startDate:
+ *         type: string
+ *       methodology:
+ *         type: string
+ */
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'PUT') {
     const { productId, ...updatedFields }: IProductsDTO = req.body;

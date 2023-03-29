@@ -10,6 +10,73 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { IProductsDTO } from '@/dtos/Products';
 import fsPromises from 'fs/promises';
 
+/**
+ * @swagger
+ * /api/products/create:
+ *     post:
+ *       summary: Create a new product
+ *       tags:
+ *          - Products
+ *       description: Creates a new product with the provided data
+ *       parameters:
+ *         - name: body
+ *           in: body
+ *           description: The product data to be created
+ *           required: true
+ *           schema:
+ *             $ref: '#/definitions/ProductInput'
+ *       responses:
+ *         200:
+ *           description: OK
+ *           schema:
+ *             $ref: '#/definitions/ProductOutput'
+ *         400:
+ *           description: Bad Request
+ *         405:
+ *           description: Method Not Allowed
+ *         500:
+ *           description: Internal Server Error
+ *
+ * definitions:
+ *   ProductInput:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *       productName:
+ *         type: string
+ *       productOwnerName:
+ *         type: string
+ *       Developers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       scrumMasterName:
+ *         type: string
+ *       startDate:
+ *         type: string
+ *       methodology:
+ *         type: string
+ *   ProductOutput:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *       productName:
+ *         type: string
+ *       productOwnerName:
+ *         type: string
+ *       Developers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       scrumMasterName:
+ *         type: string
+ *       startDate:
+ *         type: string
+ *       methodology:
+ *         type: string
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const newProduct: IProductsDTO = req.body;

@@ -9,9 +9,64 @@ import fs from 'fs';
 import path from 'path';
 import { IProductsDTO } from '@/dtos/Products';
 
+/**
+ * @swagger
+ * /api/products/delete:
+ *     delete:
+ *       summary: Delete a product by ID
+ *       tags:
+ *          - Products
+ *       description: Deletes a product with the specified ID from the database
+ *       parameters:
+ *         - name: body
+ *           in: body
+ *           description: The product ID to be deleted
+ *           required: true
+ *           schema:
+ *             $ref: '#/definitions/DeleteProductInput'
+ *       responses:
+ *         200:
+ *           description: OK
+ *           schema:
+ *             $ref: '#/definitions/DeleteProductOutput'
+ *         404:
+ *           description: Product not found
+ *         500:
+ *           description: Internal Server Error
+ *
+ * definitions:
+ *   DeleteProductInput:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *   DeleteProductOutput:
+ *     type: array
+ *     items:
+ *       $ref: '#/definitions/Product'
+ *   Product:
+ *     type: object
+ *     properties:
+ *       productId:
+ *         type: string
+ *       productName:
+ *         type: string
+ *       productOwnerName:
+ *         type: string
+ *       Developers:
+ *         type: array
+ *         items:
+ *           type: string
+ *       scrumMasterName:
+ *         type: string
+ *       startDate:
+ *         type: string
+ *       methodology:
+ *         type: string
+ */
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'DELETE') {
-    const { productId }: { productId: string } = req.body;
+    const { productId } = req.body;
 
     const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
 
