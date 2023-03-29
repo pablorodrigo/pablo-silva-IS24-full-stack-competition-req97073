@@ -28,10 +28,6 @@ interface IProps {
   toast: RefObject<Toast>;
 }
 
-interface IMethodologyDropdown {
-  name: string;
-  code: string;
-}
 export default function DialogForm({
   defaultProductValues,
   productDialog,
@@ -40,7 +36,6 @@ export default function DialogForm({
   toast,
 }: IProps) {
   const [formData, setFormData] = useState({});
-  const [showMessage, setShowMessage] = useState(false);
   const [newDeveloperName, setNewDeveloperName] = useState('');
 
   const methodologyDropdownItems = ['Agile', 'Waterfall'];
@@ -58,29 +53,61 @@ export default function DialogForm({
     reset(defaultProductValues);
   }, [defaultProductValues]);
 
-  const onSubmit = async (data: IProductsDTO) => {
-    if (data.productId === '') {
-      data.productId = uuid();
-      setFormData(data);
-      setShowMessage(true);
-      await createProduct(data);
-    } else {
-      setFormData(data);
-      setShowMessage(true);
-      await updateProduct(data);
+  const areAllFieldsFilled = (data: IProductsDTO) => {
+    let thereIsAnFieldEmpty = false;
+
+    for (const prop in data) {
+      if (prop === 'productId') {
+        continue;
+      }
+
+      // @ts-ignore
+      if (Array.isArray(data[prop])) {
+        // @ts-ignore
+        thereIsAnFieldEmpty = data[prop].length === 0 ? true : thereIsAnFieldEmpty;
+      } else {
+        thereIsAnFieldEmpty =
+          // @ts-ignore
+          data[prop] === '' || data[prop] === null || data[prop] === undefined
+            ? true
+            : thereIsAnFieldEmpty;
+      }
     }
 
-    handleCallingAPI();
-    toggleDialog();
+    return thereIsAnFieldEmpty;
+  };
 
-    toast.current?.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Product Created',
-      life: 3000,
-    });
+  const onSubmit = async (data: IProductsDTO) => {
+    const thereIsAnFieldEmpty = areAllFieldsFilled(data);
 
-    reset();
+    if (!thereIsAnFieldEmpty) {
+      if (data.productId === '') {
+        data.productId = uuid();
+        setFormData(data);
+        await createProduct(data);
+      } else {
+        setFormData(data);
+        await updateProduct(data);
+      }
+
+      handleCallingAPI();
+      toggleDialog();
+
+      toast.current?.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'Product Created',
+        life: 3000,
+      });
+      reset();
+    } else {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Please fill all fields',
+        life: 3000,
+      });
+    }
   };
 
   async function createProduct(product: IProductsDTO) {
@@ -134,6 +161,16 @@ export default function DialogForm({
   );
 
   const handleAddDeveloper = () => {
+    if (newDeveloperName === '') {
+      toast.current?.show({
+        severity: 'warn',
+        summary: 'Warn',
+        detail: 'Please fill the name of the developer',
+        life: 3000,
+      });
+      return;
+    }
+
     const updatedDevelopers = [...getValues('Developers'), newDeveloperName];
     setValue('Developers', updatedDevelopers);
     setNewDeveloperName('');
@@ -142,7 +179,8 @@ export default function DialogForm({
   return (
     <Dialog
       visible={productDialog}
-      style={{ width: '450px' }}
+      style={{ width: '50vw' }}
+      maximizable
       header='Product Details'
       modal
       className='p-fluid'
@@ -300,6 +338,7 @@ export default function DialogForm({
               <Controller
                 name='Developers'
                 control={control}
+                rules={{ required: 'Is required at last one developer' }}
                 render={({ field: { onChange, value }, fieldState }) => (
                   <>
                     {value.map((developer, index) => (
@@ -329,6 +368,7 @@ export default function DialogForm({
                         <Divider />
                       </React.Fragment>
                     ))}
+                    {getFormErrorMessage('Developers')}
                   </>
                 )}
               />
