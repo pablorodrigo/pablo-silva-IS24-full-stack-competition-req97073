@@ -16,7 +16,7 @@ export default function Products() {
 
   const callAPI = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/products`);
+      const res = await fetch(`/api/products`);
       const data = await res.json();
       return data;
     } catch (err) {

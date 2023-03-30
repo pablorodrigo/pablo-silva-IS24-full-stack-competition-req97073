@@ -45,7 +45,7 @@ export default function ProductsDataTable({ products, loading, handleCallingAPI,
 
   // actions
   const deleteProduct = async () => {
-    const response = await fetch('/api/products/delete', {
+    const response = await fetch('/api/products', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId: productSelected.productId }),

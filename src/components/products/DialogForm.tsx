@@ -111,7 +111,7 @@ export default function DialogForm({
   };
 
   async function createProduct(product: IProductsDTO) {
-    const response = await fetch('/api/products/create', {
+    const response = await fetch('/api/products', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product),
@@ -123,7 +123,7 @@ export default function DialogForm({
   }
 
   async function updateProduct(product: IProductsDTO) {
-    const response = await fetch('/api/products/update', {
+    const response = await fetch('/api/products', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product),
