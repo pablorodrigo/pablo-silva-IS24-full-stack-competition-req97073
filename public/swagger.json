@@ -1,0 +1,170 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "IMP API",
+    "version": "1.0"
+  },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Development server"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "summary": "Get all products",
+                "description": "Returns a list of all products in the database",
+                "tags": [
+                  "Products"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Add product",
+                "description": "Adds a new product to the system",
+                "tags": [
+                  "Products"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "productId": {
+                                        "type": "string"
+                                    },
+                                    "productName": {
+                                        "type": "string"
+                                    },
+                                    "productOwnerName": {
+                                        "type": "string"
+                                    },
+                                    "developers": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "scrumMasterName": {
+                                        "type": "string"
+                                    },
+                                    "startDate": {
+                                        "type": "string"
+                                    },
+                                    "methodology": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product added successfully"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update product",
+                "description": "Updates an existing product in the system",
+                "tags": [
+                  "Products"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "productId": {
+                                        "type": "string"
+                                    },
+                                    "productName": {
+                                        "type": "string"
+                                    },
+                                    "productOwnerName": {
+                                        "type": "string"
+                                    },
+                                    "developers": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "scrumMasterName": {
+                                        "type": "string"
+                                    },
+                                    "startDate": {
+                                        "type": "string"
+                                    },
+                                    "methodology": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "productId"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product updated successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete product",
+                "description": "Deletes a product from the system based on its productId",
+                "tags": [
+                  "Products"
+                ],
+                "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "productId": {
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Product deleted successfully"
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                }
+            }
+        }
+    }
+}

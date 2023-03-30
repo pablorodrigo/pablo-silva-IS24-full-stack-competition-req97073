@@ -1,54 +1,26 @@
 /**
  * Created by Pablo Silva
- * Date: 2023/03/28
- * Time: 5:27 PM
+ * Date: 2023/03/30
+ * Time: 12:03 AM
  */
 
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { createSwaggerSpec } from 'next-swagger-doc';
 import dynamic from 'next/dynamic';
 import 'swagger-ui-react/swagger-ui.css';
 import React, { ReactElement } from 'react';
 
-const SwaggerUI = dynamic<{
-  spec: any;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-}>(import('swagger-ui-react'), { ssr: false });
+// @ts-ignore
+const SwaggerUI = dynamic<{ url: string }>(import('swagger-ui-react'), {
+  ssr: false,
+});
 
-// Component that renders the API documentation page
-function ApiDoc({ spec }: InferGetStaticPropsType<typeof getStaticProps>) {
-  return <SwaggerUI spec={spec} />;
+export default function ApiDocs() {
+  return (
+    <div>
+      <SwaggerUI url='/swagger.json' />
+    </div>
+  );
 }
 
-// Function to generate the Swagger specification from a definition
-export const getStaticProps: GetStaticProps = async () => {
-  const spec: Record<string, any> = createSwaggerSpec({
-    apiFolder: 'src/pages/api/products',
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'IMP API',
-        version: '1.0',
-      },
-      servers: [
-        {
-          url: 'http://localhost:3000',
-          description: 'Development server',
-        },
-      ],
-    },
-  });
-
-  return {
-    props: {
-      spec,
-    },
-  };
-};
-
-ApiDoc.getLayout = function getLayout(page: ReactElement) {
+ApiDocs.getLayout = function getLayout(page: ReactElement) {
   return <React.Fragment>{page}</React.Fragment>;
 };
-
-export default ApiDoc;
