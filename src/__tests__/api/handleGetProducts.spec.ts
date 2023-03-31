@@ -4,25 +4,27 @@
  * Time: 11:26 PM
  */
 
-import handler from '@/pages/api/products/index';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { createMocks } from 'node-mocks-http';
-import productsData from '@/localDataBase/data-for-tests.json';
+import httpMocks from 'node-mocks-http';
+import fs from 'fs';
+import path from 'path';
+import handler from '@/pages/api/products';
 
 describe('GET /api/products', () => {
-  it('returns the products data as JSON', async () => {
-    // Create mock request and response objects
-    const { req, res } = createMocks<NextApiRequest, NextApiResponse>({
+  it('should return the list of products as JSON', async () => {
+    const req = httpMocks.createRequest({
       method: 'GET',
     });
 
-    // Call the handler function with the mock request and response objects
+    const res = httpMocks.createResponse();
+
     await handler(req, res);
 
+    const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
+    const jsonData = await fs.promises.readFile(dataFilePath, 'utf-8');
+    const expectedData = JSON.parse(jsonData);
     // Expect the response status code to be 200
-    expect(res.statusCode).toBe(200);
-
+    expect(res._getStatusCode()).toBe(200);
     // Expect the response body to be the products data as JSON
-    expect(res._getJSONData()).toEqual(productsData);
+    expect(JSON.parse(res._getData())).toEqual(expectedData);
   });
 });

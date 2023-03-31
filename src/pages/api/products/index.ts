@@ -5,36 +5,30 @@
  */
 
 import { NextApiRequest, NextApiResponse } from 'next';
-import nextConnect, { NextHandler } from 'next-connect';
 import path from 'path';
 import fsPromises from 'fs/promises';
 import { IProductsDTO } from '@/dtos/Products';
 import fs from 'fs';
 
-const handler = nextConnect<NextApiRequest, NextApiResponse>();
-
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   //Find the absolute path of the json directory
-  const filePath = path.join(process.cwd(), 'src/localDataBase/data.json');
+  const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
   //Read the json data file data.json
-  const jsonData = await fsPromises.readFile(filePath, 'utf-8');
+  const jsonData = await fsPromises.readFile(dataFilePath, 'utf-8');
 
   const objectData = JSON.parse(jsonData);
 
   //Return the content of the data file in json format
   res.status(200).json(objectData);
-});
+}
 
-handler.post(async (req: NextApiRequest, res: NextApiResponse) => {
+async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   const newProduct: IProductsDTO = req.body;
 
   const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
 
-  const jsonData = await fsPromises.readFile(dataFilePath);
+  const jsonData = await fsPromises.readFile(dataFilePath, 'utf-8');
 
-  // Read the current data from the file
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const currentData: IProductsDTO[] = JSON.parse(jsonData);
 
   // Add the new product to the current data
@@ -45,9 +39,9 @@ handler.post(async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Send a response with the updated data
   res.status(200).json(currentData);
-});
+}
 
-handler.put(async (req: NextApiRequest, res: NextApiResponse) => {
+async function handlePut(req: NextApiRequest, res: NextApiResponse) {
   const { productId, ...updatedFields }: IProductsDTO = req.body;
 
   const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
@@ -72,9 +66,9 @@ handler.put(async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Send a response with the updated data
   res.status(200).json(updatedProduct);
-});
+}
 
-handler.delete(async (req: NextApiRequest, res: NextApiResponse) => {
+async function handleDelete(req: NextApiRequest, res: NextApiResponse) {
   const { productId } = req.body;
 
   const dataFilePath = path.join(process.cwd(), 'src/localDataBase/data.json');
@@ -98,6 +92,23 @@ handler.delete(async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Send a response with the updated data
   res.status(200).json(currentData);
-});
+}
 
-export default handler;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  switch (req.method) {
+    case 'GET':
+      await handleGet(req, res);
+      break;
+    case 'POST':
+      await handlePost(req, res);
+      break;
+    case 'PUT':
+      await handlePut(req, res);
+      break;
+    case 'DELETE':
+      await handleDelete(req, res);
+      break;
+    default:
+      res.status(405).json({ error: 'Method not available' });
+  }
+}
